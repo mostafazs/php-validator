@@ -5,7 +5,7 @@
 * 
 * @author Mostafa Ziasistani <mostafas.dev@gmail.com>
 * @license MIT
-* @version 1.0.0
+* @version 1.1.0
 **/
 namespace Mostafazs;
 
@@ -521,6 +521,65 @@ class Validator {
 		return false;
 	  }
 	}
+	
+	//check ip address 
+	//@since 1.1.0
+	function Ip($field,$version){
+		if($version == "4"){
+			if(self::isValidV4($field)){
+				$this->valid = true;
+			}else{
+				$this->valid = false;
+			}
+		}else if($version == "6"){
+			if(self::isValidV6($field)){
+				$this->valid = true;
+			}else{
+				$this->valid = false;
+			}
+		}else{
+			return false;
+		}
+		if($this->valid){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
+	//@since 1.1.0
+	private function isValidV4($value)
+    {
+        if (!preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/', $value, $matches)) {
+            return false;
+        }
+        for ($i = 1; $i <= 4; ++$i) {
+            if ($matches[$i] > 255) {
+                return false;
+            }
+        }
+        return true;
+    }
+	
+	//@since 1.1.0
+	private function isValidV6($value)
+    {
+        if (!preg_match('/^[0-9a-fA-F]{0,4}(:[0-9a-fA-F]{0,4}){1,5}((:[0-9a-fA-F]{0,4}){1,2}|:([\d\.]+))$/', $value, $matches)) {
+            return false;
+        }
+        // allow V4 addresses mapped to V6
+        if (isset($matches[4]) && !$this->isValidV4($matches[4])) {
+            return false;
+        }
+        // "::" is only allowed once per address
+        if (($offset = strpos($value, '::')) !== false) {
+            if (strpos($value, '::', $offset + 1) !== false) {
+                return false;
+            }
+        }
+        return true;
+    }
 	
 	//set errors here
 	function setError($field, $error) {

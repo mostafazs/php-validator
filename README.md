@@ -107,3 +107,11 @@ date formats "m" for month, "d" for day, "y" for year
 $result = Validator::Url($input);
 var_dump($result);
 ````
+
+### Validate IP address
+
+```php
+$result = Validator::Ip($input,$ip_version);
+var_dump($result);
+````
+support IPv4 and IPv6
